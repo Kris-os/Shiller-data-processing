@@ -1,7 +1,7 @@
 import math
 import pandas as pd
 
-from shiller_header_constants import *
+from .shiller_header_constants import *
 
 def extract_rolling_windows(df, length_of_window):
     subsets = []
