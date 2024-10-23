@@ -14,10 +14,11 @@ def extract_rolling_windows(df, length_of_window):
         subset.reset_index(drop=True, inplace=True)
         subsets.append(subset)
         
-    subsets = [rebase_column(subset, equities_real_total_return_header) for subset in subsets]
-    subsets = [rebase_column(subset, bonds_real_total_return_header) for subset in subsets]
-    subsets = [rebase_column(subset, tbills_real_return_header) for subset in subsets]
-    
+    headers = [equities_real_total_return_header, bonds_real_total_return_header, tbills_real_return_header]
+    for header in headers:
+        for subset in subsets:
+            rebase_column(subset, header)
+            
     return subsets
 
 def rebase_column(df, column_name):
