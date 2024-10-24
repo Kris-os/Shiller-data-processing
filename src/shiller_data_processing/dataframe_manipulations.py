@@ -14,14 +14,12 @@ def extract_rolling_windows(df: pd.DataFrame, length_of_window: int, columns_to_
         subset.reset_index(drop=True, inplace=True)
         subsets.append(subset)
     
-    if not columns_to_rebase:
-        columns_to_rebase = df.columns.tolist()
-
-    for col in columns_to_rebase:
-        if col not in df.columns:
-            raise ValueError(f"The column '{col}' does not exist in the DataFrame.")
-        for subset in subsets:
-            rebase_column(subset, col)
+    if(columns_to_rebase):
+        for col in columns_to_rebase:
+            if col not in df.columns:
+                raise ValueError(f"The column '{col}' does not exist in the DataFrame.")
+            for subset in subsets:
+                rebase_column(subset, col)
             
     return subsets
 
