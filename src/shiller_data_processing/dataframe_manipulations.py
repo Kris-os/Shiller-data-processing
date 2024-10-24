@@ -3,7 +3,7 @@ import pandas as pd
 
 from .shiller_header_constants import *
 
-def extract_rolling_windows(df, length_of_window):
+def extract_rolling_windows(df: pd.DataFrame, length_of_window: int, columns: list[str] = None):
     subsets = []
     num_subsets = len(df) - length_of_window + 1
 
@@ -13,11 +13,15 @@ def extract_rolling_windows(df, length_of_window):
         subset.name = df.index[start]
         subset.reset_index(drop=True, inplace=True)
         subsets.append(subset)
-        
-    headers = [equities_real_total_return_header, bonds_real_total_return_header, tbills_real_return_header]
-    for header in headers:
+    
+    if not columns:
+        columns = df.columns.tolist()
+
+    for col in columns:
+        if col not in df.columns:
+            raise ValueError(f"The column '{col}' does not exist in the DataFrame.")
         for subset in subsets:
-            rebase_column(subset, header)
+            rebase_column(subset, col)
             
     return subsets
 
