@@ -3,21 +3,21 @@ import pandas as pd
 
 from .shiller_header_constants import *
 
-def extract_rolling_windows(df: pd.DataFrame, length_of_window: int, columns: list[str] = None):
+
+def extract_rolling_windows(df: pd.DataFrame, length_of_window: int, columns_to_rebase: list[str] = None):
     subsets = []
     num_subsets = len(df) - length_of_window + 1
 
     for start in range(num_subsets):
         subset = df.iloc[start:start + length_of_window].copy()
-        if pd.isna(subset.iloc[0][tbills_real_return_header]): continue
         subset.name = df.index[start]
         subset.reset_index(drop=True, inplace=True)
         subsets.append(subset)
     
-    if not columns:
-        columns = df.columns.tolist()
+    if not columns_to_rebase:
+        columns_to_rebase = df.columns.tolist()
 
-    for col in columns:
+    for col in columns_to_rebase:
         if col not in df.columns:
             raise ValueError(f"The column '{col}' does not exist in the DataFrame.")
         for subset in subsets:
