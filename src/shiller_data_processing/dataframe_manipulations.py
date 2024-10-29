@@ -4,15 +4,19 @@ import pandas as pd
 from .shiller_header_constants import *
 
 
-def extract_rolling_windows(df: pd.DataFrame, length_of_window: int, columns_to_rebase: list[str] = None):
-    subsets = []
-    num_subsets = len(df) - length_of_window + 1
+def extract_rolling_windows(df: pd.DataFrame, 
+                            length_of_window: int, 
+                            window_stride: int,
+                            columns_to_rebase: list[str] | None = None):
+    subsets: list[pd.DataFrame] = []
+    start_index = 0
 
-    for start in range(num_subsets):
-        subset = df.iloc[start:start + length_of_window].copy()
-        subset.name = df.index[start]
+    while start_index + length_of_window <= len(df):
+        subset: pd.DataFrame = df.iloc[start_index:start_index + length_of_window].copy()
+        subset.name = df.index[start_index]
         subset.reset_index(drop=True, inplace=True)
         subsets.append(subset)
+        start_index += window_stride
     
     if(columns_to_rebase):
         for col in columns_to_rebase:

@@ -4,7 +4,7 @@ import numpy as np
 from .shiller_header_constants import *
 from .dataframe_manipulations import rebase_column
 
-def read_simba_tbills_data(simba_tbills_data_location, cpi_data: pd.DataFrame):
+def read_simba_tbills_data(simba_tbills_data_location: str, cpi_data: pd.DataFrame):
     raw_tbills_column_name = 'TBills (no fee)'
     raw_year_column_name = 'Year'
     df_tbills = pd.read_excel(simba_tbills_data_location, engine='odf') 
@@ -64,24 +64,24 @@ def read_shiller_data(shiller_data_location):
 
     # Remove the last row if it contains NaN
     if df_trimmed.tail(1).isna().any(axis=1).item():
-        df = df_trimmed.iloc[:-1]
+        df_trimmed = df_trimmed.iloc[:-1]
 
     #remove last row as it's a partial month
-    df = df.iloc[:-1]
+    df_trimmed = df_trimmed.iloc[:-1]
 
     # Reset the index (since rows were removed)
-    df.reset_index(drop=True, inplace=True)
+    df_trimmed.reset_index(drop=True, inplace=True)
 
-    rebase_column(df, equities_real_total_return_header)
+    rebase_column(df_trimmed, equities_real_total_return_header)
 
-    if not df.loc[0, bonds_real_total_return_header] == 1:
+    if not df_trimmed.loc[0, bonds_real_total_return_header] == 1:
         raise AssertionError("Bond TRs need rebasing.")
 
-    dates = pd.date_range(start=min_date, periods=len(df), freq='ME')
-    df.insert(0, 'Date', dates)
-    df.set_index('Date', inplace=True)
+    dates = pd.date_range(start=min_date, periods=len(df_trimmed), freq='ME')
+    df_trimmed.insert(0, 'Date', dates)
+    df_trimmed.set_index('Date', inplace=True)
     
-    return (df, min_date)
+    return (df_trimmed, min_date)
 
 def _validate_sheet(df_raw, real_earnings_col, CPI_col, ten_year_treasury_yield_col):
     stock_data_header_correct = (
