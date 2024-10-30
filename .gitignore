@@ -7,6 +7,7 @@ __pycache__/
 *.so
 
 # Distribution / packaging
+publish_script_powershell.ps1
 .Python
 build/
 develop-eggs/
