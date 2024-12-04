@@ -11,8 +11,8 @@ def extract_rolling_windows(df: pd.DataFrame,
     subsets: list[pd.DataFrame] = []
     start_index = 0
 
-    while start_index + length_of_window <= len(df):
-        subset: pd.DataFrame = df.iloc[start_index:start_index + length_of_window].copy()
+    while start_index + length_of_window * window_stride <= len(df):
+        subset: pd.DataFrame = df.iloc[start_index:start_index + length_of_window * window_stride: window_stride].copy()
         subset.name = df.index[start_index]
         subset.reset_index(drop=True, inplace=True)
         subsets.append(subset)
